@@ -572,3 +572,188 @@ Multiple presentations in one project:
 [name].html
 [name]-assets/
 ```
+
+## Diagram Layout Patterns
+
+Use these zero-dependency CSS layouts when a slide needs to render a relationship diagram. All patterns use only CSS (no JS, no canvas, no SVG) and respect `clamp()` sizing and `overflow: hidden` constraints.
+
+### cycle-diagram — Circular / Flywheel Processes
+
+```html
+<div class="cycle-diagram">
+  <div class="cycle-node">Step 1</div>
+  <div class="cycle-node">Step 2</div>
+  <div class="cycle-node">Step 3</div>
+  <div class="cycle-node">Step 4</div>
+</div>
+```
+
+```css
+.cycle-diagram {
+  position: relative;
+  width: min(40vh, 400px);
+  height: min(40vh, 400px);
+  margin: auto;
+}
+.cycle-node {
+  position: absolute;
+  width: clamp(4rem, 8vw, 7rem);
+  height: clamp(4rem, 8vw, 7rem);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--small-size);
+  font-weight: 700;
+  text-align: center;
+}
+.cycle-node:nth-child(1) { top: 0;    left: 50%; transform: translateX(-50%); }
+.cycle-node:nth-child(2) { top: 50%;  right: 0;  transform: translateY(-50%); }
+.cycle-node:nth-child(3) { bottom: 0; left: 50%; transform: translateX(-50%); }
+.cycle-node:nth-child(4) { top: 50%;  left: 0;   transform: translateY(-50%); }
+```
+
+### pipeline-diagram — Input → Process → Output
+
+```html
+<div class="pipeline-diagram">
+  <div class="pipeline-node">Input</div>
+  <div class="pipeline-arrow">→</div>
+  <div class="pipeline-node">Process</div>
+  <div class="pipeline-arrow">→</div>
+  <div class="pipeline-node">Output</div>
+</div>
+```
+
+```css
+.pipeline-diagram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.5rem, 1.5vw, 1rem);
+  flex-wrap: nowrap;
+  max-width: 90%;
+  margin: auto;
+}
+.pipeline-node {
+  padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1rem, 2.5vw, 2rem);
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-radius: 8px;
+  font-size: var(--body-size);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.pipeline-arrow {
+  font-size: var(--h3-size);
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+```
+
+### hierarchy-diagram — Org Chart / Tree
+
+```html
+<div class="hierarchy-diagram">
+  <div class="h-root">CEO</div>
+  <div class="h-children">
+    <div class="h-node">VP Eng</div>
+    <div class="h-node">VP Design</div>
+    <div class="h-node">VP Sales</div>
+  </div>
+</div>
+```
+
+```css
+.hierarchy-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 2vh, 2rem);
+}
+.h-root {
+  padding: clamp(0.5rem, 1.5vw, 1rem) clamp(1.5rem, 3vw, 3rem);
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: var(--body-size);
+}
+.h-children {
+  display: flex;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  position: relative;
+}
+.h-children::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * clamp(0.5rem, 1vh, 1rem));
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: clamp(0.5rem, 1vh, 1rem);
+  background: var(--text-secondary);
+}
+.h-node {
+  padding: clamp(0.4rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+  border: 1px solid var(--text-secondary);
+  border-radius: 8px;
+  font-size: var(--small-size);
+  color: var(--text-primary);
+}
+```
+
+### hub-diagram — Hub and Spoke
+
+```html
+<div class="hub-diagram">
+  <div class="hub-center">Core</div>
+  <div class="hub-spoke">API</div>
+  <div class="hub-spoke">DB</div>
+  <div class="hub-spoke">Cache</div>
+  <div class="hub-spoke">Auth</div>
+</div>
+```
+
+```css
+.hub-diagram {
+  position: relative;
+  width: min(38vh, 380px);
+  height: min(38vh, 380px);
+  margin: auto;
+}
+.hub-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(4rem, 8vw, 7rem);
+  height: clamp(4rem, 8vw, 7rem);
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--body-size);
+  z-index: 1;
+}
+.hub-spoke {
+  position: absolute;
+  width: clamp(3rem, 6vw, 5rem);
+  height: clamp(3rem, 6vw, 5rem);
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--small-size);
+  top: 50%; left: 50%;
+}
+.hub-spoke:nth-child(2) { transform: translate(-50%, -50%) translate(0, -140%); }
+.hub-spoke:nth-child(3) { transform: translate(-50%, -50%) translate(140%, 0); }
+.hub-spoke:nth-child(4) { transform: translate(-50%, -50%) translate(0, 140%); }
+.hub-spoke:nth-child(5) { transform: translate(-50%, -50%) translate(-140%, 0); }
+```
