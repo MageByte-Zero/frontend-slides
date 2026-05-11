@@ -182,7 +182,12 @@ Every presentation must include:
    - Add `.visible` class when slides enter viewport
    - Trigger CSS transitions efficiently
 
-3. **Optional Enhancements** (match to chosen style):
+3. **FullscreenController** — Standard in every presentation:
+   - Fixed `⛶` button, bottom-right corner
+   - `F` key shortcut (skip when target has `contenteditable`)
+   - Button icon toggles to `✕` when fullscreen is active
+
+4. **Optional Enhancements** (match to chosen style):
    - Custom cursor with trail
    - Particle system background (canvas)
    - Parallax effects
@@ -190,11 +195,77 @@ Every presentation must include:
    - Magnetic buttons
    - Counter animations
 
-4. **Inline Editing** (only if user opted in during Phase 1 — skip entirely if they said No):
+5. **Inline Editing** (only if user opted in during Phase 1 — skip entirely if they said No):
    - Edit toggle button (hidden by default, revealed via hover hotzone or `E` key)
    - Auto-save to localStorage
    - Export/save file functionality
    - See "Inline Editing Implementation" section below
+
+## Fullscreen Controller (Required in Every Presentation)
+
+Add this to every generated presentation — it is not optional.
+
+HTML (inside `<body>`, before slides):
+```html
+<button class="fullscreen-btn" id="fullscreenBtn" title="Fullscreen (F)">⛶</button>
+```
+
+CSS:
+```css
+.fullscreen-btn {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.6);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: background 0.2s, color 0.2s;
+}
+.fullscreen-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+```
+
+JS (instantiate alongside `new SlidePresentation()`):
+```javascript
+class FullscreenController {
+  constructor() {
+    this.btn = document.getElementById('fullscreenBtn');
+    this.btn.addEventListener('click', () => this.toggle());
+    document.addEventListener('keydown', (e) => {
+      if ((e.key === 'f' || e.key === 'F') && !e.target.getAttribute('contenteditable')) {
+        this.toggle();
+      }
+    });
+    document.addEventListener('fullscreenchange', () => this.updateIcon());
+  }
+
+  toggle() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  }
+
+  updateIcon() {
+    this.btn.textContent = document.fullscreenElement ? '✕' : '⛶';
+  }
+}
+
+new SlidePresentation();
+new FullscreenController();
+```
 
 ## Inline Editing Implementation (Opt-In Only)
 
