@@ -152,7 +152,7 @@ img, .image-container {
     }
 }
 
-/* Large viewports (≥ 1600px — projectors, 4K displays) */
+/* Large viewports (≥ 1600px — projectors and large displays) */
 @media (min-width: 1600px) {
     :root {
         --title-size: clamp(1.5rem, 5vw, 6rem);
