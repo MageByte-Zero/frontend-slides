@@ -325,6 +325,44 @@ exportFile() {
 }
 ```
 
+## Bullet / List Patterns
+
+**CRITICAL: Never use `display: grid` on `<li>` elements that contain inline `<code>` chips.**
+
+CSS Grid wraps every text node and inline element into an anonymous block box. A single `<li>foo <code>bar</code> baz</li>` produces three separate rows — each fragment on its own line.
+
+Use this hanging-indent pattern instead (absolute `::before` marker):
+
+```css
+.bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem, 1vh, 1rem);
+}
+
+.bullets li {
+  position: relative;
+  padding-left: clamp(1.4rem, 2.5vw, 2rem);
+  font-size: var(--body-size);
+  line-height: 1.5;
+}
+
+.bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: clamp(0.75rem, 1.5vw, 1.2rem);
+  height: 2px;
+  background: var(--accent);
+}
+```
+
+This renders `<li>text <code>chip</code> more text</li>` correctly as a single inline-flowing line.
+
 ## Image Pipeline (Skip If No Images)
 
 If user chose "No images" in Phase 1, skip this entirely. If images were provided, process them before generating HTML.
