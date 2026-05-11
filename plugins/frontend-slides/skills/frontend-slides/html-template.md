@@ -325,6 +325,44 @@ exportFile() {
 }
 ```
 
+### Inline Edit — Enter Key & Paste Fix
+
+**Why this is needed:** Chrome inserts `<div>` on Enter inside `contenteditable` (Firefox uses `<br>`, Safari varies). A `<div>` inside `<h1>` or `<p>` is invalid HTML — browsers "fix" it when serializing `outerHTML` for Ctrl+S export, producing a structurally different file where the new line renders in the wrong font. Pasting from external sources brings inline `font-family`/`color`/`background-color` that override CSS theme tokens.
+
+Add these three items when entering edit mode (call from inside `toggleEditMode()` or `enterEditMode()`):
+
+```javascript
+enableEditMode(editableElements) {
+  // 1. Set paragraph separator to <br> (prevents Chrome <div>-on-Enter bug)
+  document.execCommand('defaultParagraphSeparator', false, 'br');
+
+  editableElements.forEach(el => {
+    el.setAttribute('contenteditable', 'true');
+
+    // 2. Intercept Enter: insert <br> instead of <div>
+    el.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        // execCommand is deprecated but has no clean replacement as of 2026
+        document.execCommand('insertLineBreak');
+      }
+    });
+
+    // 3. Intercept paste: strip to plain text only
+    el.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData('text/plain');
+      document.execCommand('insertText', false, text);
+    });
+  });
+}
+```
+
+**localStorage version bump:** If previously-saved presentations in localStorage contain `<div>` garbage from the old behavior, bump the storage key version so they don't load corrupted content:
+```javascript
+const STORAGE_KEY = 'presentation-edits-v2'; // was v1
+```
+
 ## Bullet / List Patterns
 
 **CRITICAL: Never use `display: grid` on `<li>` elements that contain inline `<code>` chips.**
