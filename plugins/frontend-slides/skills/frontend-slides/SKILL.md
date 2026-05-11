@@ -123,6 +123,24 @@ If user provides an image folder:
 
 **Logo in previews:** If a usable logo was identified, embed it (base64) into each style preview in Phase 2 — the user sees their brand styled three different ways.
 
+### Step 1.3: Diagram Detection
+
+After evaluating each image, identify any **relationship diagrams** — images with spatial structure that encodes meaning (arrows, nodes, flows, hierarchies). These require dedicated CSS layouts in Phase 3 to preserve that structure.
+
+Detect and label each diagram image as one of:
+
+| Type | Visual cues | HTML layout |
+|------|-------------|-------------|
+| `cycle-diagram` | Circular arrows, flywheel, recurring loop | Circle of nodes with arc connectors |
+| `pipeline-diagram` | Left→right flow, input/process/output boxes | Horizontal flex with arrow separators |
+| `feedback-diagram` | Main flow + return arrow, system loop | Forward path + curved return path |
+| `hierarchy-diagram` | Org chart, tree, parent→children | CSS grid tree with connecting lines |
+| `hub-diagram` | Central node + spokes to outer nodes | CSS radial positioning |
+
+**If any diagram is detected:** note the type for Phase 3. The corresponding CSS layout patterns are in [html-template.md](html-template.md) under "Diagram Layout Patterns".
+
+**If no diagrams detected:** skip to Phase 2 as normal.
+
 ---
 
 ## Phase 2: Style Discovery
