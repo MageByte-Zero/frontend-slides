@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Zero-dependency HTML presentation generator with 12 curated visual themes, PPT conversion, and anti-AI-slop design philosophy.",
   "author": {
-    "name": "zarazhangrui",
-    "url": "https://github.com/zarazhangrui"
+    "name": "MageByte-Zero",
+    "url": "https://github.com/MageByte-Zero"
   },
-  "homepage": "https://github.com/zarazhangrui/frontend-slides",
-  "repository": "https://github.com/zarazhangrui/frontend-slides",
+  "homepage": "https://github.com/MageByte-Zero/frontend-slides",
+  "repository": "https://github.com/MageByte-Zero/frontend-slides",
   "license": "MIT",
   "keywords": ["presentations", "slides", "html", "design", "powerpoint", "animations"],
   "skills": "./skills/"
